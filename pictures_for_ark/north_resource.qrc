@@ -1,0 +1,19 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>resource/carnotaurus.png</file>
+    <file>resource/giganotosaurus.png</file>
+    <file>resource/purlovia.png</file>
+    <file>resource/woolyrhino.png</file>
+    <file>resource/kairuku.png</file>
+    <file>resource/yutyrannus.png</file>
+    <file>resource/chalicotherium.png</file>
+    <file>resource/Direwolf.png</file>
+    <file>resource/mammoth.png</file>
+    <file>resource/kairuku.png</file>
+    <file>resource/Sabertooth.png</file>
+    <file>resource/doedicurus.png</file>
+    <file>resource/argentavis.png</file>
+    <file>resource/megatherium.png</file>
+    <file>resource/meganeura.png</file>
+  </qresource>
+</RCC>

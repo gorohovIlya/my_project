@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>MAP_BC.png</file>
+  </qresource>
+</RCC>

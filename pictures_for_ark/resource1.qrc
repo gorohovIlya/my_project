@@ -1,0 +1,20 @@
+<RCC>
+  <qresource prefix="resource">
+    <file>resource/dilophosaurus.png</file>
+    <file>resource/leech.png</file>
+    <file>resource/phiomia.png</file>
+    <file>resource/dimetrodon.png</file>
+    <file>resource/dimorph.png</file>
+    <file>resource/piranha.png</file>
+    <file>resource/sabertooth_salmon.png</file>
+    <file>resource/spinosaurus.png</file>
+    <file>resource/sarco.png</file>
+    <file>resource/paracer.png</file>
+    <file>resource/meganeura.png</file>
+    <file>resource/beelzebufo.png</file>
+    <file>resource/baryonyx.png</file>
+    <file>resource/kaprosuchus.png</file>
+    <file>resource/titanoboa.png</file>
+    <file>resource/achatina.png</file>
+  </qresource>
+</RCC>
