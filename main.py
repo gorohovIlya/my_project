@@ -42,10 +42,16 @@ class MyArkManual(QMainWindow):
             frame = QVBoxLayout()
             frame.addWidget(label, alignment=Qt.AlignCenter)
             frame.addWidget(btn)
-            # if btn.text() == 'The Island':
-            btn.clicked.connect(self.open_map_window)
-            # if btn.text() == 'Scorched Earth':
-            #     btn.clicked.connect(self.open_map_window)
+            if btn.text() == 'The Island':
+                btn.clicked.connect(lambda: self.open_map_window('The Island'))
+            elif btn.text() == 'Scorched Earth':
+                btn.clicked.connect(lambda: self.open_map_window('Scorched Earth'))
+            elif btn.text() == 'Aberration':
+                btn.clicked.connect(lambda: self.open_map_window('Aberration'))
+            elif btn.text() == 'Extinction':
+                btn.clicked.connect(lambda: self.open_map_window('Extinction'))
+            elif btn.text() == 'Ragnarok':
+                btn.clicked.connect(lambda: self.open_map_window('Ragnarok'))
             # self.theislandbtn.clicked.connect(self.open_map_window)
             # self.scorchedearthbtn.clicked.connect(self.open_map_window)
             # self.aberrationbtn.clicked.connect(self.open_map_window)
@@ -55,10 +61,11 @@ class MyArkManual(QMainWindow):
             # print(btn.objectName())
             # print(btn.text())
 
-    def open_map_window(self):
+    def open_map_window(self, btn_text):
         self.hide()
         # print(btn)
-        Map(self)
+        # print(btn_text)
+        Map(current_map=btn_text, parent=self)
 
         # if btn.objectName == 'theislandbtn':
         #     Map(self)
@@ -78,11 +85,11 @@ class MyArkManual(QMainWindow):
 
 
 class Map(QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, current_map, parent=None):
         super().__init__(parent)
+        self.current_map = current_map
         self.parent = parent
         self.initUI()
-        # self.imgs = imgs
         self.show()
 
     def initUI(self):
@@ -90,14 +97,56 @@ class Map(QMainWindow):
             uic.loadUi('test_map.ui', self)
         # if self.btn.objectName == 'theislandbtn':
         #     print(self.btn.objectName)
-            imgs = cursor.execute("""SELECT * FROM Map_regions""").fetchall()
-            print(imgs)
+        #     print(self.current_map)
+            imgs = cursor.execute(f"""SELECT * FROM Map_regions WHERE map_name = '{self.current_map}'""").fetchall()
+            # print(imgs)
+            pixmap = QPixmap()
             for el in imgs:
-                pixmap = QPixmap()
                 pixmap.loadFromData(el[2], "png")
                 pixmap_resized = pixmap.scaled(751, 751, QtCore.Qt.KeepAspectRatio)
                 self.label.setPixmap(pixmap_resized)
-            print(imgs)
+                regions = (el[0].split('\n'))
+                for i in regions:
+                    region_btn = QPushButton(i, self)
+                    if region_btn.text() == 'Западное побережье':
+                        region_btn.setGeometry(50, 380, 160, 25)
+                    elif region_btn.text() == 'Остров Крэгга':
+                        region_btn.setGeometry(90, 630, 160, 25)
+                    elif region_btn.text() == 'Секвойный лес':
+                        region_btn.setGeometry(250, 450, 160, 25)
+                    elif region_btn.text() == 'Извилистые болота':
+                        region_btn.setGeometry(320, 490, 160, 25)
+                    elif region_btn.text() == 'Южные острова':
+                        region_btn.setGeometry(360, 570, 160, 25)
+                    elif region_btn.text() == 'Северные регионы':
+                        region_btn.setGeometry(50, 90, 160, 25)
+                    elif region_btn.text() == 'Мертвый остров':
+                        region_btn.setGeometry(560, 90, 160, 25)
+                    elif region_btn.text() == 'Восточное побережье':
+                        region_btn.setGeometry(560, 380, 160, 25)
+                    elif region_btn.text() == 'Южная гавань':
+                        region_btn.setGeometry(560, 600, 160, 25)
+                    elif region_btn.text() == 'Горы':
+                        region_btn.setGeometry(90, 350, 160, 25)
+                    elif region_btn.text() == 'Дюны':
+                        region_btn.setGeometry(500, 130, 160, 25)
+                    elif region_btn.text() == 'Оазис 1':
+                        region_btn.setGeometry(180, 90, 160, 25)
+                    elif region_btn.text() == 'Оазис 2':
+                        region_btn.setGeometry(200, 540, 160, 25)
+                    elif region_btn.text() == 'Оазис 3':
+                        region_btn.setGeometry(500, 370, 160, 25)
+                    elif region_btn.text() == 'Нижняя пустыня':
+                        region_btn.setGeometry(500, 480, 160, 25)
+                    elif region_btn.text() == 'Траншея драконов':
+                        region_btn.setGeometry(50, 410, 160, 25)
+                    elif region_btn.text() == 'Каньоны':
+                        region_btn.setGeometry(350, 450, 160, 25)
+                    elif region_btn.text() == 'Верхняя пустыня':
+                        region_btn.setGeometry(270, 370, 160, 25)
+                    elif region_btn.text() == 'Бесплодные земли':
+                        region_btn.setGeometry(520, 400, 160, 25)
+                print([i for i in el[0].split('\n')])
         except Exception as e:
             print(e)
 
