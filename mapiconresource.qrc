@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="newPrefix">
-    <file>map_icons/aberration.png</file>
-    <file>map_icons/extinction.png</file>
-    <file>map_icons/island.png</file>
-    <file>map_icons/ragnarok.png</file>
-    <file>map_icons/scorched.png</file>
-  </qresource>
-</RCC>
