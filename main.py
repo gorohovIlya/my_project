@@ -14,6 +14,7 @@ class MyArkManual(QMainWindow):
         super().__init__()
         self.initUI()
         self.show()
+        self.exit.clicked.connect(self.exit_from_app)
 
     def initUI(self):
         cursor = connection.cursor()
@@ -47,6 +48,9 @@ class MyArkManual(QMainWindow):
         self.hide()
         Map(current_map=btn_text, parent=self)
 
+    def exit_from_app(self):
+        self.close()
+
 
 class Map(QMainWindow):
     def __init__(self, current_map, parent=None):
@@ -55,6 +59,7 @@ class Map(QMainWindow):
         self.parent = parent
         self.initUI()
         self.show()
+        self.return_back.clicked.connect(self.previousWindow)
 
     def initUI(self):
         try:
@@ -66,13 +71,10 @@ class Map(QMainWindow):
                 pixmap_resized = pixmap.scaled(751, 751, QtCore.Qt.KeepAspectRatio)
                 self.label.setPixmap(pixmap_resized)
                 regions = el[0].split('\n')
-                print(regions)
                 locations = el[3]
                 locations = locations.split('\n')
                 locations_improved = [elem.split(', ') for elem in locations]
-                print(locations_improved)
                 l2 = [list(map(int, x)) for x in locations_improved]
-                print(l2)
                 for i in range(len(regions)):
                     region_btn = QPushButton(regions[i], self)
                     region_btn.setGeometry(l2[i][0], l2[i][1], l2[i][2], l2[i][3])
@@ -81,10 +83,11 @@ class Map(QMainWindow):
             print(e)
 
     def open_region_window(self, reg_btn_text):
-        sender = self.sender()
-        print(sender.text())
-        print(reg_btn_text)
         Region(current_region=reg_btn_text, parent=self)
+
+    def previousWindow(self):
+        self.close()
+        self.parent.show()
 
 
 class Region(QMainWindow):  # окно региона
@@ -94,24 +97,21 @@ class Region(QMainWindow):  # окно региона
         self.parent = parent
         self.initUI()
         self.show()
+        self.return_back.clicked.connect(self.previousWindow)
 
     def initUI(self):
         try:
             animal_frames = []
             uic.loadUi('region.ui', self)
             creatures = cursor.execute(f"""SELECT creatures FROM RegionsDinos WHERE region_name = '{self.current_region}'""").fetchall()  # выбираем из таблицы в базе данных нужные значения
-            print(creatures)
             animals = creatures[0][0].split(', ')
-            print(animals)
-
+            pixmap = QPixmap()
             for dino in range(len(animals)):
                 icon = cursor.execute(f"""SELECT dino_icon FROM Creatures_info WHERE Name = '{animals[dino]}'""").fetchall()
-
-                pixmap = QPixmap()
                 pixmap.loadFromData(icon[0][0], "png")
-
-                pixmap_resized = pixmap.scaled(120, 120, QtCore.Qt.KeepAspectRatio)
+                pixmap_resized = pixmap.scaled(100, 100, QtCore.Qt.KeepAspectRatio)
                 dino_btn = QPushButton(animals[dino], self)
+                dino_btn.clicked.connect(lambda: self.open_dino_window(self.sender().text()))
                 label = QLabel()
                 label.setPixmap(pixmap_resized)
                 frame = QVBoxLayout()
@@ -121,9 +121,56 @@ class Region(QMainWindow):  # окно региона
             for x in range(1):
                 for y in range(2):
                     self.gridLayout.addLayout(animal_frames[y], x, y)
-
+            self.title.setText(self.current_region)
         except Exception as e:
             print(e)
+
+    def previousWindow(self):
+        self.close()
+        self.parent.show()
+
+    def open_dino_window(self, dino_btn_text):
+        Dino(current_dino=dino_btn_text, parent=self)
+
+
+class Dino(QMainWindow):
+    def __init__(self, current_dino, parent=None):
+        super().__init__(parent)
+        self.current_dino = current_dino
+        self.parent = parent
+        self.initUI()
+        self.show()
+        self.return_back.clicked.connect(self.previousWindow)
+
+    def initUI(self):
+        try:
+            uic.loadUi('DinoInfo.ui', self)
+            request = cursor.execute(f"""SELECT * FROM Creatures_info WHERE Name = '{self.current_dino}'""").fetchall()
+            pixmap = QPixmap()
+            pixmap1 = QPixmap()
+            for el in request:
+                pixmap.loadFromData(el[13], "png")
+                pixmap_resized = pixmap.scaled(329, 232, QtCore.Qt.KeepAspectRatio)
+                pixmap1.loadFromData(el[14], "png")
+                pixmap_resized1 = pixmap1.scaled(329, 232, QtCore.Qt.KeepAspectRatio)
+                self.picture_1.setPixmap(pixmap_resized)
+                self.picture_2.setPixmap(pixmap_resized1)
+                self.title.setText(el[1])
+                self.tameable.setText(el[4])
+                self.food_type.setText(el[6])
+                self.rideable.setText(el[8])
+                self.mateable.setText(el[9])
+                self.saddle_required.setText(el[10])
+                self.food_value.setText(el[5])
+                self.harvests_value.setText(el[7])
+                self.saddle_recipe_value.setText(el[11])
+                self.basic_stats_value.setText(el[3])
+        except Exception as e:
+            print(e)
+
+    def previousWindow(self):
+        self.close()
+        self.parent.show()
 
 
 def except_hook(cls, exception, traceback):
