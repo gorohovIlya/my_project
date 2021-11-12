@@ -59,17 +59,17 @@ class MyArkManual(QMainWindow, test.Ui_MainWindow):
 
     def open_map_window(self, btn_text):
         self.hide()
-        Map(current_map=btn_text, parent=self)
+        MapWnd(current_map=btn_text, parent=self)
 
     def exit_from_app(self):
         self.close()
 
     def open_searcher_window(self, user_input):
         self.hide()
-        DinoSearch(edittext=user_input, parent=self)
+        DinoSearchWnd(edittext=user_input, parent=self)
 
 
-class DinoSearch(QMainWindow, search_results.Ui_MainWindow):
+class DinoSearchWnd(QMainWindow, search_results.Ui_MainWindow):
     def __init__(self, edittext, parent=None):
         super().__init__(parent)
         self.edittext = edittext
@@ -117,14 +117,14 @@ class DinoSearch(QMainWindow, search_results.Ui_MainWindow):
             print(e)
 
     def open_dino_window(self, dino_btn_text):
-        Dino(current_dino=dino_btn_text, parent=self)
+        AboutDinoWnd(current_dino=dino_btn_text, parent=self)
 
     def previousWindow(self):
         self.close()
         self.parent.show()
 
 
-class Map(QMainWindow, test_map.Ui_MainWindow):
+class MapWnd(QMainWindow, test_map.Ui_MainWindow):
     def __init__(self, current_map, parent=None):
         super().__init__(parent)
         self.current_map = current_map
@@ -156,14 +156,14 @@ class Map(QMainWindow, test_map.Ui_MainWindow):
             print(e)
 
     def open_region_window(self, reg_btn_text):
-        Region(current_region=reg_btn_text, parent=self)
+        RegionWnd(current_region=reg_btn_text, parent=self)
 
     def previousWindow(self):
         self.close()
         self.parent.show()
 
 
-class Region(QMainWindow, region.Ui_MainWindow):  # окно региона
+class RegionWnd(QMainWindow, region.Ui_MainWindow):  # окно региона
     def __init__(self, current_region, parent=None):
         super().__init__(parent)
         self.current_region = current_region
@@ -174,8 +174,10 @@ class Region(QMainWindow, region.Ui_MainWindow):  # окно региона
 
     def initUI(self):
         try:
-            animal_frames = []
             self.setupUi(self)
+            self.reg_title.setText(self.current_region)
+            animal_frames = []
+            # self.setupUi(self)
             creatures = cursor.\
                 execute(f"""SELECT creatures FROM RegionsDinos WHERE region_name = '{self.current_region}'""").\
                 fetchall()  # выбираем из таблицы в базе данных нужные значения
@@ -197,7 +199,6 @@ class Region(QMainWindow, region.Ui_MainWindow):  # окно региона
             for x in range(3):
                 for y in range(6):
                     self.gridLayout.addLayout(animal_frames[y], x, y)
-            self.title.setText(self.current_region)
         except Exception as e:
             print(e)
 
@@ -206,10 +207,10 @@ class Region(QMainWindow, region.Ui_MainWindow):  # окно региона
         self.parent.show()
 
     def open_dino_window(self, dino_btn_text):
-        Dino(current_dino=dino_btn_text, parent=self)
+        AboutDinoWnd(current_dino=dino_btn_text, parent=self)
 
 
-class Dino(QMainWindow, DinoInfo.Ui_MainWindow):
+class AboutDinoWnd(QMainWindow, DinoInfo.Ui_MainWindow):
     def __init__(self, current_dino, parent=None):
         super().__init__(parent)
         self.current_dino = current_dino
